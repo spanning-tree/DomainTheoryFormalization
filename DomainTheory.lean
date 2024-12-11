@@ -9,6 +9,11 @@ import Mathlib.Topology.OmegaCompletePartialOrder
 
 namespace DomainTheory
 
+
+/-
+**TODO**: follow Mathlib's style guide
+-/
+
 /-
 ## References
 
@@ -96,7 +101,8 @@ lemma way_below_transitive {α : Type*} [Dcpo α] (x y z: α): x ≪ y → y ≪
   have h4 : z ≤ z := by exact Preorder.le_refl z
   exact way_below_transitive_strong x y z z h3 h4 h2
 
--- I dont know the exact name of ↡ x
+-- I dont know the exact English name of ↡ x, as in the literature, it is usually written in the form of ↡ x
+-- **TODO**: check the exact name of ↡ x
 /-- Definition 2.2.1 -/
 def approximant {α : Type*} [Dcpo α] (x: α) : Set α := { a: α | a ≪ x }
 
@@ -249,7 +255,8 @@ theorem exists_way_below_interpolation {α : Type*} [ContinuousDcpo α] (x y: α
   use w
   apply And.intro (way_below_transitive_strong x z w w hz2 (Preorder.le_refl w) hw.left) hw.right
 
--- I dont know the exact name of it
+-- I dont know the exact English name of ↟ x, as in the literature, it is usually written in the form of ↟ x
+-- **TODO**: check the exact name of ↟ x
 /-- Definition 2.2.1 -/
 def upward {α : Type*} [Dcpo α] (x: α) : Set α := { a: α | x ≪ a }
 
@@ -448,6 +455,8 @@ def least_fixpoint {α: Type*} [PointedDcpo α] (f: α → α) (hf: ScottContinu
   let c : OmegaCompletePartialOrder.Chain α := continuous_function_iteration_is_chain f hf
   exact sSup (Set.range c)
 
+-- **TODO**: Generalize this to OmegaCompletePartialOrder
+/-- Theorem 2.1.19.1 -/
 theorem least_fixpoint_is_fixpoint {α: Type*} [PointedDcpo α] (f: α → α) (hf: ScottContinuous f): f (least_fixpoint f hf) = (least_fixpoint f hf) := by
   rw [least_fixpoint]
   let s := Set.range (continuous_function_iteration_is_chain f hf)
@@ -516,6 +525,7 @@ theorem least_fixpoint_is_fixpoint {α: Type*} [PointedDcpo α] (f: α → α) (
   · exact h1
   · exact h2
 
+/-- Theorem 2.1.19.1 -/
 theorem least_fixpoint_is_least {α: Type*} [PointedDcpo α] (f: α → α) (hf: ScottContinuous f) (x: α): f x = x → least_fixpoint f hf ≤ x := by
   intro hfix
   have hmonotone : Monotone f := hf.monotone
@@ -545,11 +555,6 @@ theorem least_fixpoint_is_least {α: Type*} [PointedDcpo α] (f: α → α) (hf:
 
 /-- **TODO**: Proposition 2.1.16 -/
 theorem monotone_function_has_fixpoint {α: Type} [PointedDcpo α] (f: α → α) (hf: Monotone f): ∃ x: α, f x = x := sorry
-
-
-/-
-**TODO**: follow Mathlib's style guide
--/
 
 
 
