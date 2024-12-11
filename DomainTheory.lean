@@ -330,7 +330,56 @@ theorem open_set_iff_union_upward {α : Type*} [ContinuousDcpo α] [TopologicalS
   · intro hopen
     rw [Topology.IsScott.isOpen_iff_isUpperSet_and_dirSupInacc] at hopen
     exact upper_dirSupInacc_set_is_union_upward X hopen
-  · have : ∀ Y ∈ {x | ∃ x_1 ∈ X, ↟ x_1 = x}, IsOpen Y := by
+  · have : ∀ Y ∈ {x | ∃ x' ∈ X, ↟ x' = x}, IsOpen Y := by
+      intro Y hY
+      obtain ⟨x, _, hx2⟩ := hY
+      rw [← hx2]
+      exact upward_is_open_set x
+    intro h
+    rw [h]
+    exact isOpen_sUnion this
+
+lemma basis_upward {α : Type*} [ContinuousDcpo α] (X : Set α) (hX : IsUpperSet X ∧ DirSupInacc X) : ⋃₀ {↟ x | x ∈ X} = ⋃₀ {↟ x | x ∈ X ∩ ContinuousDcpo.basis} := by
+  apply Set.eq_of_subset_of_subset <;>
+    rw [Set.subset_def] <;>
+    intro x hx <;>
+    obtain ⟨Y, hY1, hY2⟩ := hx <;>
+    obtain ⟨x', hx'1, hx'2⟩ := hY1 <;>
+        rw [← hx'2] at hY2 <;>
+    refine Set.mem_sUnion.mpr ?_
+  · obtain ⟨_, hX⟩ := hX
+    rw [DirSupInacc] at hX
+    let s := ↡ x' ∩ ContinuousDcpo.basis
+    have h1 : (s ∩ X).Nonempty := by
+      exact hX (ContinuousDcpo.nonempty_intersection x') (ContinuousDcpo.directed_intersection x') (ContinuousDcpo.sup_intersection x') hx'1
+    obtain ⟨y, hy⟩ := h1
+    obtain ⟨hy, hy1⟩ := hy
+    obtain ⟨hy, hy2⟩ := hy
+    use ↟ y
+    constructor
+    use y
+    constructor
+    · constructor
+      exact hy1
+      exact hy2
+    · rfl
+    · exact way_below_transitive y x' x hy hY2
+  · use ↟ x'
+    constructor
+    use x'
+    constructor
+    · exact Set.mem_of_mem_inter_left hx'1
+    · rfl
+    · exact hY2
+
+/-- Proposition 2.3.6.2 -/
+theorem open_set_iff_union_basis_upward {α : Type*} [ContinuousDcpo α] [TopologicalSpace α] [Topology.IsScott α] (X: Set α): IsOpen X ↔ X = ⋃₀ {↟ x | x ∈ X ∩ ContinuousDcpo.basis} := by
+  constructor
+  · intro hopen
+    rw [Topology.IsScott.isOpen_iff_isUpperSet_and_dirSupInacc] at hopen
+    rw [← basis_upward X hopen]
+    exact upper_dirSupInacc_set_is_union_upward X hopen
+  · have : ∀ Y ∈ {x | ∃ x' ∈ X ∩ ContinuousDcpo.basis, ↟ x' = x}, IsOpen Y := by
       intro Y hY
       obtain ⟨x, _, hx2⟩ := hY
       rw [← hx2]
