@@ -25,6 +25,16 @@ namespace DomainTheory
 #check DirectedOn
 #check CompletePartialOrder
 
+
+instance CompletePartialOrder.toOrderBot {α : Type*} [CompletePartialOrder α] : OrderBot α where
+  bot := sSup ∅
+  bot_le := by
+    have h₁: DirectedOn (· ≤ ·) (∅ : Set α) := by
+      simp [DirectedOn]
+    have h₂: IsLUB ∅ (sSup ∅) := CompletePartialOrder.lubOfDirected ∅ h₁
+    simp [IsLUB, IsLeast, upperBounds, lowerBounds] at h₂
+    exact h₂
+
 -- Under the definition of `DirectedOn`, the empty set is directed
 lemma empty_set_is_directed {α : Type*} [Preorder α] : DirectedOn (· ≤ ·) (∅ : Set α) := by
   rw [DirectedOn]
