@@ -46,24 +46,22 @@ lemma lub_ClosedInterval (s : Set ClosedInterval) (lub: ClosedInterval) : IsLUB 
 noncomputable instance : CompletePartialOrder ClosedInterval where
   sSup := by
     intro s
-    by_cases h : s.Nonempty
-    · by_cases hbounded : (BddAbove (ClosedInterval.left '' s) ∧ BddBelow (ClosedInterval.right '' s))
-      · have hlub := Real.exists_isLUB (Set.Nonempty.image ClosedInterval.left h) hbounded.left
-        have hglb := Real.exists_isGLB (Set.Nonempty.image ClosedInterval.right h) hbounded.right
-        let x := hlub.choose
-        let x' := hglb.choose
-        exact {
-        left := by
-          exact hlub.choose
-        right := by
-          by_cases x ≤ x'
-          · exact x'
-          · exact x
-        ordered := by
-          by_cases h' : x ≤ x' <;>
-            simp [h']
-      }
-      · exact ⟨0, 0, (by linarith)⟩
+    by_cases hbounded : BddAbove (ClosedInterval.left '' s) ∧ BddBelow (ClosedInterval.right '' s) ∧ s.Nonempty
+    · have hlub := Real.exists_isLUB (Set.Nonempty.image ClosedInterval.left hbounded.right.right) hbounded.left
+      have hglb := Real.exists_isGLB (Set.Nonempty.image ClosedInterval.right hbounded.right.right) hbounded.right.left
+      let x := hlub.choose
+      let x' := hglb.choose
+      exact {
+      left := by
+        exact hlub.choose
+      right := by
+        by_cases x ≤ x'
+        · exact x'
+        · exact x
+      ordered := by
+        by_cases h' : x ≤ x' <;>
+          simp [h']
+    }
     · exact ⟨0, 0, (by linarith)⟩
 
   lubOfDirected := by
@@ -98,13 +96,10 @@ noncomputable instance : CompletePartialOrder ClosedInterval where
         obtain ⟨i₁, hi₁₁, hi₁₂⟩ := hl
         obtain ⟨i₂, hi₂₁, hi₂₂⟩ := hr
 
-        have h₃ : i₂.right < i₁.left := by
-          linarith
-
         obtain ⟨i, _, h₅, h₆⟩ := hdir i₁ hi₁₁ i₂ hi₂₁
-        obtain ⟨h₇, h₈⟩ := h₅
-        obtain ⟨h₉, h₁₀⟩ := h₆
-        linarith [i.ordered, h₃, h₇, h₈, h₉, h₁₀]
+        obtain ⟨h₇, _⟩ := h₅
+        obtain ⟨_, h₁₀⟩ := h₆
+        linarith [i.ordered]
 
     · simp at hbounded
       by_cases h : ¬s.Nonempty
@@ -120,9 +115,9 @@ noncomputable instance : CompletePartialOrder ClosedInterval where
             contradiction
           obtain ⟨i₂, hi₂, hi₁₂⟩ := h i₁.left
           obtain ⟨i, _, h₅, h₆⟩ := hdir i₁ hi₁ i₂ hi₂
-          obtain ⟨h₇, h₈⟩ := h₅
-          obtain ⟨h₉, h₁₀⟩ := h₆
-          linarith [i.ordered, hi₁₂, h₇, h₈, h₉, h₁₀]
+          obtain ⟨h₇, _⟩ := h₅
+          obtain ⟨_, h₁₀⟩ := h₆
+          linarith [i.ordered]
         · simp [h, BddAbove, upperBounds] at hbounded
           have h : ∀ x, ∃ y ∈ s, x < y.left := by
             by_contra h'
@@ -130,9 +125,9 @@ noncomputable instance : CompletePartialOrder ClosedInterval where
             contradiction
           obtain ⟨i₂, hi₂, hi₁₂⟩ := h i₁.right
           obtain ⟨i, _, h₅, h₆⟩ := hdir i₁ hi₁ i₂ hi₂
-          obtain ⟨h₇, h₈⟩ := h₅
-          obtain ⟨h₉, h₁₀⟩ := h₆
-          linarith [i.ordered, hi₁₂, h₇, h₈, h₉, h₁₀]
+          obtain ⟨_, h₈⟩ := h₅
+          obtain ⟨h₉, _⟩ := h₆
+          linarith [i.ordered]
 
 
 

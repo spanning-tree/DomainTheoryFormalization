@@ -171,13 +171,10 @@ noncomputable instance : CompletePartialOrder ClosedInterval where
         obtain ⟨i₁, hi₁₁, hi₁₂⟩ := hl
         obtain ⟨i₂, hi₂₁, hi₂₂⟩ := hr
 
-        have h₃ : i₂.right < i₁.left := by
-          linarith
-
         obtain ⟨i, _, h₅, h₆⟩ := hdir i₁ hi₁₁ i₂ hi₂₁
-        obtain ⟨h₇, h₈⟩ := h₅
-        obtain ⟨h₉, h₁₀⟩ := h₆
-        linarith [i.ordered, h₃, h₇, h₈, h₉, h₁₀]
+        obtain ⟨h₇, _⟩ := h₅
+        obtain ⟨_, h₁₀⟩ := h₆
+        linarith [i.ordered]
     · have hs' : s = ∅ := by
         exact Set.not_nonempty_iff_eq_empty.mp hs
       simp [hs, IsLUB, IsLeast, upperBounds, lowerBounds, hs']
