@@ -121,25 +121,20 @@ noncomputable instance : CompletePartialOrder ClosedInterval where
   sSup := by
     intro s
     by_cases h : s.Nonempty
-    · exact {
-      left := by
-        exact (exists_left_sup s h).choose
+    · let x := (exists_left_sup s h).choose
+      let x' := (exists_right_inf s h).choose
+      exact {
+      left := x
       right := by
-        let x := (exists_left_sup s h).choose
-        let x' := (exists_right_inf s h).choose
         by_cases x ≤ x'
         · exact x'
         · exact 1
       left_bound := (exists_left_sup s h).choose_spec.right.left
       right_bound := by
-        let x := (exists_left_sup s h).choose
-        let x' := (exists_right_inf s h).choose
         by_cases h' : x ≤ x' <;>
           simp [h']
         exact (exists_right_inf s h).choose_spec.right.right
       ordered := by
-        let x := (exists_left_sup s h).choose
-        let x' := (exists_right_inf s h).choose
         by_cases h' : x ≤ x' <;>
           simp [h']
         exact (exists_left_sup s h).choose_spec.right.right
